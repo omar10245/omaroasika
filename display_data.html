@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض بيانات المستخدمين</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            position: relative;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            background-color: #2c3e50; /* لون أزرق غامق */
+            color: white;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            overflow-y: auto;
+            z-index: 10; /* تأكد من ظهور الشريط الجانبي فوق المحتوى */
+        }
+
+        .sidebar.show {
+            transform: translateX(0);
+        }
+
+        .profile {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .profile h2 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .profile p {
+            margin: 5px 0;
+            font-size: 1.2em;
+        }
+
+        .profile a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            transition: color 0.3s;
+        }
+
+        .profile a:hover {
+            color: #ecf0f1;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #2c3e50; /* لون أزرق غامق */
+            color: #ffffff;
+            font-size: 1.1em;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .toggle-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+            z-index: 11; /* تأكد من ظهور الزر فوق المحتوى */
+        }
+
+        .toggle-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .profile-page {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 10; /* تأكد من ظهور صفحة الملف الشخصي فوق المحتوى */
+        }
+
+        .profile-page.show {
+            transform: translateX(0);
+        }
+
+        .profile-page h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .profile-page button {
+            background-color: #3498db;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .profile-page button:hover {
+            background-color: #2980b9;
+        }
+
+        .alert {
+            text-align: center;
+            color: #ff4d4d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-button" id="toggleButton">&#9776;</button>
+    <div class="container">
+        <main class="main-content" id="mainContent">
+            <h1>عرض بيانات المستخدمين</h1>
+            <button id="viewProfile" style="margin-bottom: 20px;">عرض الملف الشخصي</button>
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>البريد الإلكتروني</th>
+                        <th>كلمة السر</th>
+                        <th>اسم الجهاز</th>
+                        <th>نوع الشبكة</th>
+                        <th>عنوان الـ IP</th>
+                        <th>الموقع</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- سيتم ملء البيانات هنا بواسطة JavaScript -->
+                </tbody>
+            </table>
+        </main>
+        <aside class="sidebar" id="sidebar">
+            <div class="profile">
+                <img src="https://via.placeholder.com/120" alt="صورة شخصية" class="profile-pic">
+                <h2>Omar Mohamed</h2>
+                <p>مطور ويب</p>
+            </div>
+        </aside>
+        <div class="profile-page" id="profilePage">
+            <h2>الملف الشخصي</h2>
+            <p>هذه هي صفحة الملف الشخصي. يمكنك إضافة معلومات أخرى هنا.</p>
+            <button onclick="goBack()">عودة</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.getElementById('toggleButton');
+            const profilePage = document.getElementById('profilePage');
+            const mainContent = document.getElementById('mainContent');
+
+            toggleButton.addEventListener('click', () => {
+                sidebar.classList.toggle('show');
+            });
+
+            document.getElementById('viewProfile').addEventListener('click', (event) => {
+                event.preventDefault();
+                profilePage.classList.add('show');
+                mainContent.style.opacity = '0.3'; // تجعل الخلفية باهتة قليلاً
+            });
+
+            window.goBack = function() {
+                profilePage.classList.remove('show');
+                mainContent.style.opacity = '1'; // إعادة الخلفية إلى وضعها الطبيعي
+            };
+
+            fetch('fetch_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#userTable tbody');
+                    if (Array.isArray(data)) {
+                        data.forEach(user => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${user.email || 'غير متوفر'}</td>
+                                <td>${user.password || 'غير متوفر'}</td>
+                                <td>${user.device_name || 'غير متوفر'}</td>
+                                <td>${user.network_type || 'غير متوفر'}</td>
+                                <td>${user.ip_address || 'غير متوفر'}</td>
+                                <td>${user.location || 'غير متوفر'}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const tableBody = document.querySelector('#userTable tbody');
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td colspan="6" class="alert">حدث خطأ: البيانات غير صحيحة</td>
+                        `;
+                        tableBody.appendChild(row);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const tableBody = document.querySelector('#userTable tbody');
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td colspan="6" class="alert">حدث خطأ في تحميل البيانات</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+        });
+    </script>
+</body>
+</html>
